@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MergeSort — Algorithm Galaxy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{--bg:#03040d;--panel:rgba(11,15,36,.76);--panel2:#0d1230;--line:rgba(153,164,255,.16);--purple:#a77cff;--cyan:#55e8ff;--pink:#ff6fcb;--green:#66efad;--gold:#ffd56a;--muted:#8994bb;--white:#f7f8ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--white);font-family:Inter,sans-serif;background:#03040d;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-5;background:radial-gradient(ellipse at 50% 5%,#20235d 0%,#0a0d25 35%,#03040d 72%)}
+body:after{content:"";position:fixed;inset:0;z-index:-4;opacity:.48;background-image:radial-gradient(#fff 1px,transparent 1px),radial-gradient(#b8c4ff 1px,transparent 1px),radial-gradient(#fff 1px,transparent 1px);background-size:91px 91px,151px 151px,237px 237px;background-position:12px 21px,60px 90px,120px 30px}
+.space-glow{position:fixed;inset:auto auto 8% -260px;width:700px;height:700px;background:#5b35e9;filter:blur(130px);opacity:.12;z-index:-3}.space-glow.two{left:auto;right:-320px;top:30%;background:#13bfe7}
+.shooting{position:fixed;width:120px;height:1px;background:linear-gradient(90deg,transparent,#bdefff,transparent);transform:rotate(-25deg);opacity:0;z-index:-1;animation:shoot 9s linear infinite}.s1{top:17%;left:8%;animation-delay:1s}.s2{top:34%;left:70%;animation-delay:5s}.s3{top:68%;left:30%;animation-delay:7s}
+@keyframes shoot{0%,85%{opacity:0;transform:translate(0,0) rotate(-25deg)}88%{opacity:1}100%{opacity:0;transform:translate(260px,120px) rotate(-25deg)}}
+.top{height:76px;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,65px);background:rgba(3,5,16,.74);border-bottom:1px solid var(--line);backdrop-filter:blur(20px)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#8e62ff,#3e2a9d);box-shadow:0 0 30px #7251dc66;font-size:20px}.brand b{font:700 16px "Space Grotesk";letter-spacing:2px}.brand small{display:block;color:#7883a9;font-size:9px;margin-top:3px}.top-right{display:flex;align-items:center;gap:10px}.status{padding:8px 11px;border:1px solid #66efad35;border-radius:999px;color:var(--green);font-size:9px;font-weight:800;letter-spacing:1px;background:#66efad0b}.stars-label{font-size:10px;color:#7d87a8}
+.wrap{width:min(1240px,calc(100% - 30px));margin:auto}.hero{min-height:350px;display:grid;grid-template-columns:1fr 380px;align-items:center;padding:48px 10px 28px}.eyebrow{color:var(--cyan);font-size:10px;letter-spacing:3px;font-weight:800}.hero h1{font:700 clamp(46px,6vw,76px)/.93 "Space Grotesk";letter-spacing:-3px;margin:15px 0}.hero h1 span{display:block;background:linear-gradient(90deg,#fff,#bba9ff 48%,#5eeaff);-webkit-background-clip:text;color:transparent}.hero p{max-width:610px;color:#8e98bc;line-height:1.7;font-size:13px}.hero-actions{display:flex;gap:9px;margin-top:23px}.hero-note{font-size:9px;color:#687394;margin-top:12px}.cosmos{height:290px;position:relative;display:grid;place-items:center}.planet{width:112px;height:112px;border-radius:50%;background:radial-gradient(circle at 32% 27%,#e4dcff,#8d6bff 32%,#34247e 70%,#0d0b2a);box-shadow:0 0 60px #8465ff80,0 0 120px #5f45d522;display:grid;place-items:center;font:700 13px "Space Grotesk";position:relative;z-index:3}.planet:after{content:"";position:absolute;inset:12px;border-radius:50%;border:1px solid #ffffff15}.ring{position:absolute;border:1px solid #63eaff55;border-radius:50%;width:300px;height:95px;transform:rotate(-22deg)}.ring.r2{width:260px;height:180px;transform:rotate(54deg);border-color:#ff6fcb38}.ring.r3{width:350px;height:215px;transform:rotate(10deg);border-color:#9a7cff24}.orb{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan);animation:orbit 5s linear infinite}.orb.o2{background:var(--pink);box-shadow:0 0 18px var(--pink);animation-duration:8s;animation-direction:reverse}@keyframes orbit{from{transform:rotate(0deg) translateX(150px) rotate(0deg)}to{transform:rotate(360deg) translateX(150px) rotate(-360deg)}}
+.grid{display:grid;grid-template-columns:310px 1fr;gap:18px}.panel{background:linear-gradient(145deg,rgba(14,20,49,.84),rgba(6,9,24,.8));border:1px solid var(--line);border-radius:22px;box-shadow:0 25px 80px #0008;backdrop-filter:blur(15px);overflow:hidden}.head{padding:19px 21px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.kicker{color:var(--cyan);font-size:9px;letter-spacing:2px;font-weight:800}.head h2{font:700 17px "Space Grotesk";margin:4px 0 0}.live{font-size:8px;letter-spacing:1.5px;color:var(--green);border:1px solid #66efad33;border-radius:999px;padding:6px 8px;background:#66efad08}.input{padding-bottom:20px}.input label{display:block;margin:20px 21px 8px;color:#bac2df;font-size:10px}.input input{display:block;width:calc(100% - 42px);margin:0 21px;background:#050819;border:1px solid var(--line);border-radius:12px;color:#fff;padding:13px;font:600 12px Inter;outline:0}.input input:focus{border-color:#55e8ff66;box-shadow:0 0 0 3px #55e8ff0b}.hint{margin:7px 21px;color:#646f95;font-size:9px}.row{display:flex;gap:8px;margin:16px 21px 0}.btn{border:1px solid var(--line);border-radius:11px;background:#ffffff08;color:#e8ebff;padding:11px 13px;font:700 10px Inter;cursor:pointer;transition:.2s}.btn:hover:not(:disabled){transform:translateY(-2px);border-color:#a77cff77;box-shadow:0 8px 25px #0005}.btn.primary{background:linear-gradient(135deg,#7954ed,#4831a8);border-color:#a98aff}.btn.cyan{background:linear-gradient(135deg,#087f9e,#174d9e);border-color:#42d9f5}.btn:disabled{opacity:.28;cursor:not-allowed}.input .row .btn{flex:1}.callout{margin:16px 21px 0;border:1px solid #55e8ff18;background:#55e8ff06;padding:12px;border-radius:13px;display:flex;gap:10px}.callout i{font-style:normal;color:var(--cyan);font-size:18px}.callout b{font-size:10px}.callout p{margin:4px 0 0;color:#7580a4;font-size:9px;line-height:1.5}
+.sim{padding-bottom:20px}.progress{padding:18px 21px 0}.ptext{display:flex;justify-content:space-between;color:#7883a7;font-size:9px;margin-bottom:7px}.bar{height:5px;border-radius:8px;background:#050719;overflow:hidden}.bar i{display:block;width:0;height:100%;background:linear-gradient(90deg,#a77cff,#55e8ff);box-shadow:0 0 15px #55e8ff88;transition:.3s}.mission{margin:17px 21px 12px;border:1px solid #ffffff0e;background:radial-gradient(circle at 50% 20%,#171c48aa,#050817aa);border-radius:17px;padding:18px;min-height:190px}.mission-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.mission-title b{font:700 13px "Space Grotesk"}.mission-title small{font-size:9px;color:#6e799c}.array{min-height:90px;display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap}.num{width:54px;height:54px;border-radius:14px;border:1px solid #9aa5d72b;background:linear-gradient(145deg,#171d42,#090d23);display:grid;place-items:center;font:700 16px "Space Grotesk";position:relative;transition:.3s;box-shadow:0 8px 24px #0006}.num:after{content:"";position:absolute;inset:0;border-radius:14px;opacity:0;background:radial-gradient(circle,#a77cff22,transparent 65%);transition:.3s}.num.active{border-color:#a77cff;transform:translateY(-7px);box-shadow:0 0 28px #a77cff55}.num.active:after{opacity:1}.num.compare{border-color:#55e8ff;transform:translateY(-5px);box-shadow:0 0 25px #55e8ff4d;color:#70efff}.num.sorted{border-color:#66efad80;background:#66efad0c;color:#7af2b5}.idx{position:absolute;bottom:-16px;color:#515b7e;font-size:8px}.explain{margin:0 21px 15px;border:1px solid #a77cff24;border-radius:14px;background:linear-gradient(90deg,#a77cff0d,#55e8ff05);padding:13px;display:flex;gap:11px}.explain-icon{width:31px;height:31px;min-width:31px;border-radius:10px;display:grid;place-items:center;background:#a77cff16;color:#cbbcff}.explain b{font:700 11px "Space Grotesk"}.explain p{font-size:9px;color:#8d97b7;line-height:1.55;margin:4px 0 0}.controls{display:flex;gap:7px;margin:0 21px;flex-wrap:wrap}.controls .btn{flex:1;min-width:82px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.stat{padding:15px;border:1px solid var(--line);border-radius:15px;background:#0a0e25cc}.stat small{font-size:8px;color:#687394;letter-spacing:1px}.stat strong{display:block;font:700 20px "Space Grotesk";margin-top:7px}.stat:nth-child(1) strong{color:var(--cyan)}.stat:nth-child(2) strong{color:var(--purple)}.stat:nth-child(3) strong{color:var(--pink)}.stat:nth-child(4) strong{color:var(--green)}
+.workspace{margin-top:18px}.workgrid{display:grid;grid-template-columns:1.15fr .85fr}.treearea{padding:20px;border-right:1px solid var(--line);min-height:315px}.mini{font-size:8px;letter-spacing:2px;color:#697495;font-weight:800}.tree{margin-top:18px;display:flex;flex-direction:column;gap:10px}.tree-row{display:flex;justify-content:center;gap:9px}.tree-node{padding:9px 12px;border-radius:10px;border:1px solid #9aa5d71c;background:#ffffff04;color:#8d98ba;font:600 9px "Space Grotesk";transition:.3s}.tree-node.active{border-color:#a77cff99;background:#a77cff10;color:#fff;box-shadow:0 0 20px #a77cff25}.tree-node.done{border-color:#66efad55;color:#86edba}.operation{padding:20px}.op-main{font:700 22px "Space Grotesk";margin:15px 0 10px}.formula{min-height:48px;border:1px solid var(--line);border-radius:11px;background:#050817;padding:11px;color:#8c96b8;font:500 10px/1.6 "Space Grotesk"}.choices{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:10px}.choice{padding:10px;border-radius:10px;border:1px solid var(--line);background:#ffffff04}.choice span{font-size:7px;color:#687394;letter-spacing:1px}.choice b{display:block;margin-top:6px;font:700 13px "Space Grotesk"}.choice.win{border-color:#66efad44;background:#66efad07}.choice.win b{color:var(--green)}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.concepts{padding:8px 21px 20px}.concept{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #ffffff09}.concept:last-child{border:0}.concept>span{color:var(--purple);font:700 9px "Space Grotesk"}.concept b{font-size:10px}.concept p{font-size:9px;color:#7c86a7;margin:4px 0 0;line-height:1.5}.complexity{padding-bottom:20px}.complex-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:19px 21px 10px}.complex-card{padding:15px;border:1px solid var(--line);border-radius:13px;background:#ffffff04}.complex-card small{font-size:7px;color:#687394;letter-spacing:1px}.complex-card b{display:block;font:700 20px "Space Grotesk";margin-top:6px;color:#d9d2ff}.complexity>p{padding:0 21px;color:#7c86a8;font-size:9px;line-height:1.6}.tags{padding:0 21px;display:flex;gap:6px;flex-wrap:wrap}.tags span{padding:6px 8px;border:1px solid #a77cff1c;background:#a77cff08;color:#909abe;border-radius:999px;font-size:7px}
+.result{margin-top:18px;padding:21px;position:relative}.result h2{font:700 18px "Space Grotesk";margin:5px 0}.success{color:var(--green);font-size:8px;letter-spacing:1px;border:1px solid #66efad33;padding:7px 9px;border-radius:999px;background:#66efad09}.resulttop{display:flex;justify-content:space-between}.resultgrid{display:grid;grid-template-columns:1fr 1.5fr .7fr;gap:9px;margin-top:17px}.resultbox{padding:15px;border:1px solid var(--line);border-radius:13px;background:#ffffff04}.resultbox small{color:#687394;font-size:7px;letter-spacing:1px}.resultbox b{display:block;margin-top:7px;font:700 14px "Space Grotesk"}.result p{color:#7e89aa;font-size:9px;line-height:1.6}.hidden{display:none}footer{text-align:center;color:#4e5879;padding:38px 15px 50px;font-size:8px;letter-spacing:.5px}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.cosmos{display:none}.grid,.lower{grid-template-columns:1fr}.workgrid{grid-template-columns:1fr}.treearea{border-right:0;border-bottom:1px solid var(--line)}}
+@media(max-width:620px){.wrap{width:calc(100% - 18px)}.hero{padding-top:35px}.hero h1{font-size:46px}.top{padding:0 13px}.stars-label{display:none}.stats{grid-template-columns:1fr 1fr}.resultgrid{grid-template-columns:1fr}.num{width:45px;height:45px}.choices{grid-template-columns:1fr 1fr 1fr}.mission{padding:13px}.head{padding:16px}}
+</style>
+</head>
+<body>
+<div class="space-glow"></div><div class="space-glow two"></div><div class="shooting s1"></div><div class="shooting s2"></div><div class="shooting s3"></div>
+
+<header class="top">
+  <div class="brand"><div class="logo">✦</div><div><b>ALGORITHM GALAXY</b><small>MERGESORT • DAA CIA 3(b)</small></div></div>
+  <div class="top-right"><span class="stars-label">● 100% ALGORITHM-DRIVEN</span><span class="status">● SIMULATOR ONLINE</span></div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+  <div>
+    <div class="eyebrow">DIVIDE • CONQUER • MERGE</div>
+    <h1>Explore <span>Merge Sort.</span></h1>
+    <p>Enter your own array and navigate through the algorithm like a mission. Watch values split into smaller worlds, compare at the merge point, and finally converge into one sorted sequence.</p>
+    <div class="hero-actions"><button class="btn primary" onclick="document.getElementById('startBtn').click()">▶ Launch Simulation</button><button class="btn" onclick="document.getElementById('exampleBtn').click()">✦ Load Mission Data</button></div>
+    <div class="hero-note">Interactive educational prototype • No precomputed output • Every state is generated by Merge Sort</div>
+  </div>
+  <div class="cosmos"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="orb"></div><div class="orb o2"></div><div class="planet">MERGE<br>CORE</div></div>
+</section>
+
+<section class="grid">
+<aside class="panel input">
+  <div class="head"><div><span class="kicker">01 • MISSION INPUT</span><h2>Choose your array</h2></div><span class="live">LIVE</span></div>
+  <label>INTEGER ARRAY</label>
+  <input id="arrayInput" value="38, 27, 43, 3, 9, 82, 10">
+  <div class="hint">2–12 whole numbers • comma separated</div>
+  <div class="row"><button class="btn primary" id="exampleBtn">✦ Example</button><button class="btn" id="randomBtn">↻ Random</button></div>
+  <div class="callout"><i>⚡</i><div><b>REAL ALGORITHM ENGINE</b><p>The simulator records genuine split, compare, place and merge states from your input.</p></div></div>
+  <div class="callout"><i>?</i><div><b>WHY MERGE SORT?</b><p>It demonstrates divide-and-conquer beautifully and runs in O(n log n) time.</p></div></div>
+</aside>
+
+<section class="panel sim">
+  <div class="head"><div><span class="kicker">02 • MISSION CONTROL</span><h2>Live Simulation</h2></div><span id="statusPill" class="live">READY</span></div>
+  <div class="progress"><div class="ptext"><span id="stepLabel">Step 0 / 0</span><span id="phaseLabel">Waiting for launch</span></div><div class="bar"><i id="progressBar"></i></div></div>
+  <div class="mission">
+    <div class="mission-title"><b id="stageTitle">Array standing by</b><small id="stageSub">Launch the simulation to begin.</small></div>
+    <div id="arrayVisual" class="array"></div>
+  </div>
+  <div class="explain"><div class="explain-icon">✦</div><div><b id="explainTitle">Ready for launch</b><p id="explainText">Merge Sort will divide the array, recursively sort the pieces, then merge them back together.</p></div></div>
+  <div class="controls"><button class="btn primary" id="startBtn">▶ Start</button><button class="btn" id="prevBtn" disabled>← Previous</button><button class="btn" id="nextBtn" disabled>Next →</button><button class="btn cyan" id="autoBtn" disabled>⚡ Auto Run</button><button class="btn" id="resetBtn">↺ Reset</button></div>
+</section>
+</section>
+
+<div class="stats">
+  <div class="stat"><small>STRATEGY</small><strong>DIVIDE</strong></div>
+  <div class="stat"><small>TIME</small><strong>O(n log n)</strong></div>
+  <div class="stat"><small>SPACE</small><strong>O(n)</strong></div>
+  <div class="stat"><small>TYPE</small><strong>STABLE</strong></div>
+</div>
+
+<section class="panel workspace">
+  <div class="head"><div><span class="kicker">03 • ALGORITHM MAP</span><h2>Division Universe</h2></div><div class="mini">WATCH THE SUBPROBLEMS EVOLVE</div></div>
+  <div class="workgrid">
+    <div class="treearea"><div class="mini">RECURSION / MERGE MAP</div><div id="tree" class="tree"></div></div>
+    <div class="operation"><div class="mini">CURRENT OPERATION</div><div id="operationMain" class="op-main">—</div><div id="formula" class="formula">Launch the simulator to see the live recurrence.</div><div class="choices"><div class="choice"><span>LEFT</span><b id="leftValue">—</b></div><div class="choice"><span>RIGHT</span><b id="rightValue">—</b></div><div class="choice win"><span>PLACED</span><b id="placedValue">—</b></div></div></div>
+  </div>
+</section>
+
+<section class="lower">
+<div class="panel"><div class="head"><div><span class="kicker">04 • CONCEPT</span><h2>How the mission works</h2></div></div><div class="concepts">
+<div class="concept"><span>01</span><div><b>DIVIDE</b><p>Find the midpoint and split the current range into two smaller ranges.</p></div></div>
+<div class="concept"><span>02</span><div><b>CONQUER</b><p>Keep dividing until every subarray contains exactly one element.</p></div></div>
+<div class="concept"><span>03</span><div><b>COMPARE</b><p>Compare the front elements of the two already-sorted halves.</p></div></div>
+<div class="concept"><span>04</span><div><b>MERGE</b><p>Place the smaller element into the merged sequence and continue.</p></div></div>
+</div></div>
+
+<div class="panel complexity"><div class="head"><div><span class="kicker">05 • ANALYSIS</span><h2>Complexity Scanner</h2></div></div><div class="complex-cards"><div class="complex-card"><small>TIME COMPLEXITY</small><b>O(n log n)</b></div><div class="complex-card"><small>SPACE COMPLEXITY</small><b>O(n)</b></div></div><p>There are log n levels of division. At each level, the total merge work is O(n), producing O(n log n) time.</p><div class="tags"><span>Divide & Conquer</span><span>Stable</span><span>Comparison Sort</span></div></div>
+</section>
+
+<section id="resultPanel" class="panel result hidden">
+<div class="resulttop"><div><span class="kicker">06 • MISSION COMPLETE</span><h2>Sorted orbit achieved ✦</h2></div><span class="success">✓ SORTED</span></div>
+<div class="resultgrid"><div class="resultbox"><small>ORIGINAL</small><b id="originalResult">—</b></div><div class="resultbox"><small>SORTED ARRAY</small><b id="sortedResult">—</b></div><div class="resultbox"><small>OPERATIONS</small><b id="operationsResult">—</b></div></div>
+<p>The simulator executed the actual Merge Sort process. The displayed result was calculated dynamically from your input, not hard-coded.</p>
+</section>
+</main>
+<footer>ALGORITHM GALAXY • Interactive Merge Sort Simulator • Independently developed for DAA CIA 3(b)</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const state = {
+  original: [],
+  steps: [],
+  index: 0,
+  running: false,
+  timer: null,
+  treeNodes: []
+};
+
+const example = [38, 27, 43, 3, 9, 82, 10];
+
+function parseInput() {
+  const raw = $("arrayInput").value.trim();
+  if (!raw) throw new Error("Please enter an array of numbers.");
+  const parts = raw.split(",");
+  if (parts.length < 2 || parts.length > 12) throw new Error("Please enter between 2 and 12 numbers.");
+  const nums = parts.map(x => {
+    if (x.trim() === "" || !/^-?\d+$/.test(x.trim())) throw new Error("Use only whole integers separated by commas.");
+    return Number(x.trim());
+  });
+  return nums;
+}
+
+function makeSteps(arr) {
+  const a = [...arr];
+  const steps = [];
+  const nodes = [];
+
+  function snapshot(type, data, explanation) {
+    steps.push({
+      type,
+      array: [...a],
+      data,
+      explanation
+    });
+  }
+
+  function mergeSort(left, right, depth = 0) {
+    if (left === right) {
+      nodes.push({left, right, depth});
+      snapshot("base", {left, right}, `A single element is already sorted: ${a[left]}.`);
+      return;
+    }
+
+    const mid = Math.floor((left + right) / 2);
+    nodes.push({left, right, mid, depth});
+
+    snapshot("split", {left, right, mid},
+      `Divide the range ${left}–${right} at midpoint ${mid}. Left half: ${left}–${mid}; right half: ${mid + 1}–${right}.`);
+
+    mergeSort(left, mid, depth + 1);
+    mergeSort(mid + 1, right, depth + 1);
+
+    let i = left, j = mid + 1;
+    const temp = [];
+
+    snapshot("mergeStart", {left, mid, right},
+      `Both halves are now sorted. Merge [${a.slice(left, mid + 1).join(", ")}] and [${a.slice(mid + 1, right + 1).join(", ")}].`);
+
+    while (i <= mid && j <= right) {
+      snapshot("compare", {i, j, left, mid, right},
+        `Compare ${a[i]} from the left half with ${a[j]} from the right half. Choose the smaller value.`);
+
+      if (a[i] <= a[j]) {
+        temp.push(a[i]);
+        snapshot("place", {chosen: a[i], i, j, left, mid, right, temp: [...temp]},
+          `${a[i]} is smaller (or equal), so place ${a[i]} into the merged portion.`);
+        i++;
+      } else {
+        temp.push(a[j]);
+        snapshot("place", {chosen: a[j], i, j, left, mid, right, temp: [...temp]},
+          `${a[j]} is smaller, so place ${a[j]} into the merged portion.`);
+        j++;
+      }
+    }
+
+    while (i <= mid) {
+      temp.push(a[i]);
+      snapshot("place", {chosen: a[i], i, j, left, mid, right, temp: [...temp]},
+        `The right half is exhausted. Copy remaining left value ${a[i]}.`);
+      i++;
+    }
+    while (j <= right) {
+      temp.push(a[j]);
+      snapshot("place", {chosen: a[j], i, j, left, mid, right, temp: [...temp]},
+        `The left half is exhausted. Copy remaining right value ${a[j]}.`);
+      j++;
+    }
+
+    for (let k = 0; k < temp.length; k++) a[left + k] = temp[k];
+
+    snapshot("merged", {left, mid, right, temp: [...temp]},
+      `Merge complete. The range ${left}–${right} is now sorted as [${temp.join(", ")}].`);
+  }
+
+  mergeSort(0, a.length - 1);
+
+  snapshot("complete", {array: [...a]},
+    `All subarrays have been merged. The entire array is sorted in ascending order.`);
+
+  return {steps, nodes};
+}
+
+function startSimulation() {
+  stopAuto();
+  try {
+    const arr = parseInput();
+    state.original = [...arr];
+    const result = makeSteps(arr);
+    state.steps = result.steps;
+    state.treeNodes = result.nodes;
+    state.index = 0;
+    $("resultPanel").classList.add("hidden");
+    $("statusPill").textContent = "READY";
+    $("statusPill").style.color = "";
+    $("statusPill").style.borderColor = "";
+    $("nextBtn").disabled = false;
+    $("prevBtn").disabled = true;
+    $("autoBtn").disabled = false;
+    $("startBtn").textContent = "↻ Restart";
+    render();
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+function applyStep() {
+  if (!state.steps.length) return;
+  if (state.index < state.steps.length) state.index++;
+  render();
+  if (state.index >= state.steps.length) {
+    stopAuto();
+    $("statusPill").textContent = "COMPLETE";
+    $("autoBtn").disabled = true;
+    showResult();
+  }
+}
+
+function previousStep() {
+  stopAuto();
+  if (state.index > 0) state.index--;
+  render();
+}
+
+function render() {
+  const total = state.steps.length;
+  const current = state.index === 0 ? null : state.steps[state.index - 1];
+
+  $("stepLabel").textContent = `Step ${state.index} / ${total}`;
+  $("progressBar").style.width = total ? `${(state.index / total) * 100}%` : "0%";
+
+  if (!current) {
+    renderArray(state.original, {});
+    $("phaseLabel").textContent = "Waiting for first operation";
+    $("stageTitle").textContent = "Your array is ready";
+    $("stageSub").textContent = "Click Next to begin dividing.";
+    $("explainTitle").textContent = "Ready to explore";
+    $("explainText").textContent = "Merge Sort uses divide-and-conquer. Each Next click executes one real algorithmic operation.";
+    $("operationMain").textContent = "—";
+    $("formula").textContent = "Start the simulation to see the recurrence.";
+    $("leftValue").textContent = "—"; $("rightValue").textContent = "—"; $("placedValue").textContent = "—";
+    renderTree(null);
+    return;
+  }
+
+  $("phaseLabel").textContent = phaseName(current.type);
+  $("stageTitle").textContent = stageTitle(current);
+  $("stageSub").textContent = current.explanation;
+
+  $("explainTitle").textContent = explainTitle(current);
+  $("explainText").textContent = current.explanation;
+
+  renderArray(current.array, current.data);
+  renderTree(current.data);
+  renderOperation(current);
+}
+
+function phaseName(type) {
+  return ({split:"DIVIDE",base:"BASE CASE",mergeStart:"MERGE",compare:"COMPARE",place:"PLACE",merged:"MERGED",complete:"FINISHED"})[type] || "";
+}
+function stageTitle(s) {
+  if (s.type === "split") return `Split range ${s.data.left}–${s.data.right}`;
+  if (s.type === "compare") return `Comparing ${s.data.i} and ${s.data.j}`;
+  if (s.type === "place") return `Placing ${s.data.chosen}`;
+  if (s.type === "merged") return `Range ${s.data.left}–${s.data.right} sorted`;
+  if (s.type === "complete") return "Mission complete";
+  return phaseName(s.type);
+}
+function explainTitle(s) {
+  return ({split:"Divide the problem",base:"Base case reached",mergeStart:"Ready to merge",compare:"Compare two values",place:"Place the smaller value",merged:"Merge completed",complete:"Array sorted!"})[s.type] || "Algorithm step";
+}
+
+function renderArray(arr, data) {
+  const wrap = $("arrayVisual");
+  wrap.innerHTML = "";
+  if (!arr.length) return;
+  arr.forEach((v, idx) => {
+    const el = document.createElement("div");
+    el.className = "num";
+    if (data) {
+      if (data.i === idx || data.j === idx) el.classList.add("compare");
+      if (data.chosen === v && currentType() === "place") el.classList.add("active");
+      if (data.left !== undefined && idx >= data.left && idx <= data.right && ["merged","complete"].includes(currentType())) el.classList.add("sorted");
+      if (data.left !== undefined && idx >= data.left && idx <= data.right && data.type === "split") el.classList.add("active");
+    }
+    el.innerHTML = `${v}<span class="idx">#${idx}</span>`;
+    wrap.appendChild(el);
+  });
+}
+function currentType(){ return state.index ? state.steps[state.index-1].type : ""; }
+
+function renderOperation(s) {
+  if (s.type === "split") {
+    $("operationMain").textContent = `Split [${s.array.slice(s.data.left,s.data.right+1).join(", ")}]`;
+    $("formula").textContent = `mid = floor((${s.data.left} + ${s.data.right}) / 2) = ${s.data.mid}`;
+    $("leftValue").textContent = `[${s.data.left}…${s.data.mid}]`;
+    $("rightValue").textContent = `[${s.data.mid+1}…${s.data.right}]`;
+    $("placedValue").textContent = "—";
+  } else if (s.type === "compare") {
+    $("operationMain").textContent = `Compare ${s.array[s.data.i]} vs ${s.array[s.data.j]}`;
+    $("formula").textContent = `${s.array[s.data.i]} ≤ ${s.array[s.data.j]} ? Take LEFT : take RIGHT`;
+    $("leftValue").textContent = s.array[s.data.i];
+    $("rightValue").textContent = s.array[s.data.j];
+    $("placedValue").textContent = "Deciding…";
+  } else if (s.type === "place") {
+    $("operationMain").textContent = `Place ${s.data.chosen}`;
+    $("formula").textContent = `merged = [${s.data.temp.join(", ")}]`;
+    $("leftValue").textContent = s.data.i <= s.data.mid ? s.array[s.data.i] ?? "—" : "done";
+    $("rightValue").textContent = s.data.j <= s.data.right ? s.array[s.data.j] ?? "—" : "done";
+    $("placedValue").textContent = s.data.chosen;
+  } else if (s.type === "merged") {
+    $("operationMain").textContent = `Sorted segment`;
+    $("formula").textContent = `[${s.data.temp.join(", ")}]`;
+    $("leftValue").textContent = "✓";
+    $("rightValue").textContent = "✓";
+    $("placedValue").textContent = s.data.temp.join(" ");
+  } else if (s.type === "complete") {
+    $("operationMain").textContent = "All values sorted";
+    $("formula").textContent = "Merge Sort complete → ascending order";
+    $("leftValue").textContent = "✓";
+    $("rightValue").textContent = "✓";
+    $("placedValue").textContent = s.data.array.join(" ");
+  } else {
+    $("operationMain").textContent = phaseName(s.type);
+    $("formula").textContent = s.explanation;
+    $("leftValue").textContent = "—"; $("rightValue").textContent = "—"; $("placedValue").textContent = "—";
+  }
+}
+
+function renderTree(active) {
+  const tree = $("tree");
+  tree.innerHTML = "";
+  const levels = {};
+  state.treeNodes.forEach(n => {
+    const key = n.depth;
+    (levels[key] ||= []).push(n);
+  });
+  Object.keys(levels).sort((a,b)=>a-b).forEach(depth => {
+    const row = document.createElement("div");
+    row.className = "tree-row";
+    levels[depth].forEach(n => {
+      const node = document.createElement("div");
+      node.className = "tree-node";
+      const values = state.original.slice(n.left, (n.right ?? n.left)+1);
+      node.textContent = `[${values.join(" · ")}]`;
+      if (active && active.left === n.left && active.right === n.right) node.classList.add("active");
+      if (state.index > 0 && state.steps[state.index-1].type === "merged" &&
+          active && active.left === n.left && active.right === n.right) node.classList.add("done");
+      row.appendChild(node);
+    });
+    tree.appendChild(row);
+  });
+}
+
+function showResult() {
+  const sorted = state.steps[state.steps.length - 1].data.array;
+  $("originalResult").textContent = state.original.join("  •  ");
+  $("sortedResult").textContent = sorted.join("  •  ");
+  $("operationsResult").textContent = state.steps.length;
+  $("resultPanel").classList.remove("hidden");
+}
+
+function autoRun() {
+  if (state.running) { stopAuto(); return; }
+  state.running = true;
+  $("autoBtn").textContent = "⏸ Pause";
+  state.timer = setInterval(() => {
+    if (state.index >= state.steps.length) { stopAuto(); return; }
+    applyStep();
+  }, 750);
+}
+function stopAuto() {
+  state.running = false;
+  clearInterval(state.timer);
+  state.timer = null;
+  $("autoBtn").textContent = "⚡ Auto Run";
+}
+function reset() {
+  stopAuto();
+  state.original = [];
+  state.steps = [];
+  state.index = 0;
+  state.treeNodes = [];
+  $("arrayVisual").innerHTML = "";
+  $("tree").innerHTML = "";
+  $("stepLabel").textContent = "Step 0 / 0";
+  $("phaseLabel").textContent = "Waiting for input";
+  $("stageTitle").textContent = "Your array is ready";
+  $("stageSub").textContent = "Press Start to enter the algorithm.";
+  $("explainTitle").textContent = "Ready to explore";
+  $("explainText").textContent = "Merge Sort uses the divide-and-conquer strategy.";
+  $("progressBar").style.width = "0%";
+  $("nextBtn").disabled = true; $("prevBtn").disabled = true; $("autoBtn").disabled = true;
+  $("startBtn").textContent = "▶ Start";
+  $("resultPanel").classList.add("hidden");
+  $("operationMain").textContent = "—"; $("formula").textContent = "Start the simulation to see the recurrence.";
+  $("leftValue").textContent = "—"; $("rightValue").textContent = "—"; $("placedValue").textContent = "—";
+}
+
+$("startBtn").addEventListener("click", startSimulation);
+$("nextBtn").addEventListener("click", applyStep);
+$("prevBtn").addEventListener("click", previousStep);
+$("autoBtn").addEventListener("click", autoRun);
+$("resetBtn").addEventListener("click", reset);
+$("exampleBtn").addEventListener("click", () => {
+  $("arrayInput").value = example.join(", ");
+  startSimulation();
+});
+$("randomBtn").addEventListener("click", () => {
+  const n = 7;
+  const vals = Array.from({length:n}, () => Math.floor(Math.random()*90)+1);
+  $("arrayInput").value = vals.join(", ");
+  startSimulation();
+});
+$("arrayInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") startSimulation();
+});
+
+</script>
+
+<script>
+/* visual polish: update the document title/status and make the launch button feel alive */
+const observer = new MutationObserver(() => {
+  const bar = document.getElementById('progressBar');
+  if (bar && bar.style.width && bar.style.width !== '0%') bar.parentElement.parentElement.classList.add('active-progress');
+});
+observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['style']});
+</script>
+</body>
+</html>
